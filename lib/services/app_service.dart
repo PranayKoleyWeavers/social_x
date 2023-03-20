@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:social_x/views/home/home_screen.dart';
 
 class AuthService {
   //FIREBASE AUTH INSTANCE
@@ -22,23 +23,32 @@ class AuthService {
         email: email,
         password: password,
       );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+      );
       debugPrint(credential.toString());
       user = firebaseAuth.currentUser;
-      await user!.sendEmailVerification();
     } on FirebaseAuthException catch (error) {
       if (error.code == 'weak-password') {
-        debugPrint(
-          'The password provided is too weak',
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('The password provided is too weak'),
+          ),
         );
       } else if (error.code == 'email-already-in-use') {
-        debugPrint(
-          'The account already exists for that email.',
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('The account already exists for that email.'),
+          ),
         );
       }
     } catch (e) {
       debugPrint(e.toString());
+      debugPrint('not sign up');
     }
-    debugPrint('not sign up');
 
     return user;
   }
@@ -55,15 +65,25 @@ class AuthService {
         email: email,
         password: password,
       );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+      );
       user = credential.user;
     } on FirebaseAuthException catch (error) {
       if (error.code == 'user-not-found') {
-        debugPrint(
-          'No user found for that email.',
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No user found for that email.'),
+          ),
         );
       } else if (error.code == 'wrong-password') {
-        debugPrint(
-          'Wrong password provided for that user.',
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Wrong password provided for that user.'),
+          ),
         );
       }
     } catch (e) {
